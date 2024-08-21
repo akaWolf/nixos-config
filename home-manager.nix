@@ -8,7 +8,7 @@
   home-manager.useGlobalPkgs = true;
 
   home-manager.users.akawolf = { pkgs, ... }: {
-    home.packages = [ pkgs.atool pkgs.httpie pkgs.git pkgs.mcfly pkgs.pyenv pkgs.bat pkgs.eza ];
+    home.packages = with pkgs; [ atool httpie git mcfly pyenv bat eza ];
     #programs.fish.enable = true;
 
     home.file.".gitconfig".source = ./configs/.gitconfig;
