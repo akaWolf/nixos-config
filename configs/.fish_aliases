@@ -1,0 +1,148 @@
+test -r ~/.private.fish && source ~/.private.fish
+
+test -r ~/.dircolors && eval (dircolors -c ~/.dircolors) || eval (dircolors -c)
+alias ls='exa --color=auto'
+alias l='ls'
+alias ll='ls -l'
+alias la='ls -a'
+alias lla='ls -la'
+
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias ..2="cd ../.."
+alias ..3="cd ../../.."
+alias ..4="cd ../../../.."
+alias ..5="cd ../../../../.."
+
+alias g='git'
+alias s='sudo'
+alias gdb='gdb --quiet' # suppress the introductory and copyright messages
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+
+alias q='qtcreator-client'
+alias e='emacs-client'
+
+alias n='nnn'
+
+alias xclip='xclip -selection clipboard'
+
+alias pastebinit='pastebinit -b https://paste.akawolf.org -a akaWolf'
+
+alias p0='picocom -b 115200 /dev/ttyUSB0'
+
+alias gex='rsync -av --progress --exclude .git'
+
+alias utc='date +%s'
+
+alias hd='od --format=x1 --address-radix=n'
+
+alias less='less --RAW-CONTROL-CHARS'
+
+# "--show-all" breaks colors, need a separate option to showing binary files
+alias less='bat --style=plain --paging=always --pager=less'
+
+alias cat='bat --style=plain --paging=never'
+
+# HEX version of a diff (using xxd)
+function hdiff --wraps=diff
+	diff (xxd $argv[1] | psub) (xxd $argv[2] | psub)
+end
+
+# Compress the cd, ls -l series of commands.
+function cl
+	if test (count $argv) = 0
+		cd && ll
+	else
+		cd "$argv" && ll
+	end
+end
+
+# Upload files
+function up
+	set -l name (basename "$argv[1]")
+	if string match -q "*.*" "$name"
+		set ext .(echo "$name" | cut -d . -f 2)
+	else
+		set ext ""
+	end
+	curl --silent -b "uid=1; identifier=$BINIDENT" -F "file=@$argv[1]" -F "filename=$name" -F "api=1" https://bin.akawolf.org/u | awk "{print \"https://bin.akawolf.org/f/\"\$2\"$ext\"}"
+end
+
+# Paste files
+function p --wraps=pastebinit
+	set -l last_arg $argv[(count $argv)]
+	set -l name (basename "$last_arg")
+	pastebinit -t $name $argv
+end
+
+# Compare md5 sum
+function md5comp
+	if string match -q "$argv[2]*" (md5sum "$argv[1]")
+		echo "OK"
+	else
+		echo "FAIL"
+	end
+end
+
+# awk calculator (remember to quote arguments if they contain parentheses)
+function c
+	awk "BEGIN{ pi=4.0*atan2(1.0,1.0); deg=pi/180.0; print $argv }";
+end
+
+# hex to bin
+function h2b
+	set -l arg (string upper $argv[1]) # bc requires upper case argument
+	set -l arg (string replace -r "^0X" "" "$arg")
+	echo "obase=2; ibase=16; $arg" | bc
+end
+
+# bin to hex
+function b2h
+	set -l arg (string replace -i -r "^0b" "" "$argv[1]")
+	echo "obase=16; ibase=2; $arg" | bc
+end
+
+# hex to dec
+function h2d
+	set -l arg (string upper $argv[1]) # bc requires upper case argument
+	set -l arg (string replace -r "^0X" "" "$arg")
+	echo "obase=10; ibase=16; $arg" | bc
+end
+
+# dec to hex
+function d2h
+	set -l arg (string replace -i -r "^0d" "" "$argv[1]")
+	echo "obase=16; ibase=10; $arg" | bc
+end
+
+# bin to dec
+function b2d
+	set -l arg (string replace -i -r "^0b" "" "$argv[1]")
+	echo "obase=10; ibase=2; $arg" | bc
+end
+
+# dec to bin
+function d2b
+	set -l arg (string replace -i -r "^0d" "" "$argv[1]")
+	echo "obase=2; ibase=10; $arg" | bc
+end
+
+# generate password: genpasswd [pass len]
+function genpasswd
+	if test (count $argv) = 0
+		set len "8"
+	else
+		set len "$argv[1]"
+	end
+	tr -dc "A-Za-z0-9" < /dev/urandom | head -c "$len"; printf "\n"
+end
+
+function grl
+	grep --color=always $argv | less
+end
+
+# Add an "alert" alias for long running commands. Use like so: sleep 10; alert
+alias alert='notify-send --urgency=low -i (test (count $argv) = 0 && echo terminal || echo error) (history|head -n1|sed -e \'s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//\')'

@@ -11,6 +11,11 @@
       ./home-manager.nix
     ];
 
+  environment.systemPackages = [ pkgs.babelfish ];
+  programs.fish.enable = true;
+  #programs.fish.useBabelfish = true;
+  users.defaultUserShell = pkgs.fish;
+
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
