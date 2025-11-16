@@ -11,7 +11,7 @@
       ./home-manager.nix
     ];
 
-  environment.systemPackages = with pkgs; [ babelfish fishPlugins.pure ];
+  environment.systemPackages = with pkgs; [ babelfish fishPlugins.pure ntfs3g ];
   programs.fish.enable = true;
   #programs.fish.useBabelfish = true;
   users.defaultUserShell = pkgs.fish;
