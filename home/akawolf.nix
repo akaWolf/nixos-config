@@ -5,11 +5,14 @@
   home.packages = with pkgs; [
     # CLI / shell
     atool httpie git mcfly pyenv bat eza kitty jq most delta
-    wget file killall nix-tree
+    wget file killall nix-tree mc
     # media
     mpv pulsemixer alsa-utils
+    # system / process monitoring
+    btop s-tui ttyplot lm_sensors
     # hardware / serial / disks
     picocom android-tools usbutils hdparm gptfdisk screen
+    smartmontools udisks btrfs-progs multipath-tools cryptsetup
     pcsc-tools
     # python with serial + requests
     (pkgs.python3.withPackages (ps: with ps; [ pyserial requests ]))
