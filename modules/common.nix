@@ -9,6 +9,12 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot";
 
+  # Small ESP (~100M) — keep only the last N generations in /boot.
+  boot.loader.systemd-boot.configurationLimit = 3;
+
+  # Shorter boot-menu auto-select (default is 5s).
+  boot.loader.timeout = 3;
+
   # Build initramfs on tmpfs for speed
   boot.tmp.useTmpfs = true;
 
