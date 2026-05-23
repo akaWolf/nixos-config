@@ -15,11 +15,8 @@
     options = [ "ro" "nofail" "noauto" "x-systemd.automount" ];
   };
 
-  fileSystems."/mnt/seagate-old" = {
-    device = "/dev/disk/by-uuid/BA78EA2A78E9E55B";
-    fsType = "ntfs3";
-    options = [ "ro" "nofail" "noauto" "x-systemd.automount" ];
-  };
+  # seagate-old (UUID BA78EA2A78E9E55B) has physically moved to pc-new
+  # and is mounted there as /mnt/toshiba1.
 
   fileSystems."/mnt/plextor" = {
     device = "/dev/disk/by-uuid/F218AD6E18AD3291";
