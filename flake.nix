@@ -24,6 +24,7 @@
         ./modules/smartcard.nix
         ./modules/monitoring.nix
         ./modules/scrutiny-collector.nix
+        ./modules/node-exporter.nix
 
         home-manager.nixosModules.home-manager
         {
