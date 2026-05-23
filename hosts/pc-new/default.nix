@@ -1,5 +1,5 @@
 # Host: pc-new (akaWolf-PC-New) — hardware-specific config.
-{ ... }:
+{ config, ... }:
 
 {
   imports = [
@@ -9,6 +9,20 @@
   ];
 
   networking.hostName = "akaWolf-PC-New";
+
+  # NVIDIA RTX 2080 Ti (Turing) — proprietary driver for CUDA.
+  services.xserver.videoDrivers = [ "nvidia" ];
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+  };
+  hardware.nvidia = {
+    modesetting.enable = true;
+    powerManagement.enable = false;
+    open = false;
+    nvidiaSettings = true;
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
+  };
 
   # Motherboard SuperIO sensors (ITE IT8792E). The driver isn't auto-loaded
   # and ACPI claims the I/O ports unless told otherwise. IT8792E isn't in
