@@ -23,6 +23,7 @@
         ./modules/desktop.nix
         ./modules/smartcard.nix
         ./modules/monitoring.nix
+        ./modules/scrutiny-collector.nix
 
         home-manager.nixosModules.home-manager
         {
