@@ -22,6 +22,14 @@
     "kernel.dmesg_restrict" = 0;
   };
 
+  # Load PC speaker for beep() (motherboard buzzer)
+  boot.kernelModules = [ "pcspkr" ];
+
+  # Let group "input" access /dev/input/pcspkr
+  services.udev.extraRules = ''
+    ACTION=="add", SUBSYSTEM=="input", ATTRS{name}=="pcspkr", MODE="0660", GROUP="input"
+  '';
+
   ##########################################################################
   # Networking (hostName is per-host)
   ##########################################################################
