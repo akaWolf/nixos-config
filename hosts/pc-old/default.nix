@@ -13,7 +13,7 @@
   # Motherboard SuperIO sensors (ITE IT8728F) — driver isn't auto-loaded,
   # and ACPI claims the chip's I/O ports unless told to back off.
   boot.kernelModules = [ "it87" ];
-  boot.kernelParams = [ "acpi_enforce_resources=lax" ];
+  boot.kernelParams = [ "acpi_enforce_resources=lax" "amdgpu.runpm=0" ];
 
   # Collector strips "/dev/" prefix internally — by-id paths break (see
   # smart_support:false in early debug). The disk SN is the real identity
