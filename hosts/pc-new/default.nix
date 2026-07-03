@@ -40,6 +40,14 @@
     { device = "/dev/nvme0"; type = "nvme"; } # nvme-GIGABYTE_GP-ASM2NE6200TTTD
   ];
 
+  # AmneziaWG VPN — drop config into /etc/amnezia/amneziawg/wg0.conf
+  # (root:root mode 600); the awg-quick-wg0.service starts when the
+  # file exists. See modules/amneziawg.nix for details.
+  services.amneziawg = {
+    enable = true;
+    interfaces = [ "wg0" ];
+  };
+
   # First NixOS version installed on this machine. Do NOT change.
   system.stateVersion = "25.05";
   home-manager.users.akawolf.home.stateVersion = "25.05";

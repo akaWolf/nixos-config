@@ -26,6 +26,7 @@
         ./modules/scrutiny-collector.nix
         ./modules/node-exporter.nix
         ./modules/amdgpu-monitor.nix
+        ./modules/amneziawg.nix
 
         home-manager.nixosModules.home-manager
         {
