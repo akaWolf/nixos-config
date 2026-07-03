@@ -15,6 +15,9 @@
   boot.kernelModules = [ "it87" ];
   boot.kernelParams = [ "acpi_enforce_resources=lax" "amdgpu.runpm=0" ];
 
+  # Polaris card needs the AMD GPU health watchdog.
+  services.amdgpu-monitor.enable = true;
+
   # Collector strips "/dev/" prefix internally — by-id paths break (see
   # smart_support:false in early debug). The disk SN is the real identity
   # in scrutiny; sd[a-d] enumeration just needs to be stable per boot.

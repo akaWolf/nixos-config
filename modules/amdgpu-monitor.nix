@@ -4,6 +4,11 @@
 # resume-failure counters every minute.
 { config, lib, pkgs, ... }:
 
+with lib;
+
+let
+  cfg = config.services.amdgpu-monitor;
+in
 let
   textfileDir = "/var/lib/node-exporter/textfile_collector";
 
@@ -55,6 +60,10 @@ let
     ${pkgs.coreutils}/bin/mv "$tmp" "$out"
   '';
 in {
+  options.services.amdgpu-monitor.enable =
+    mkEnableOption "AMD GPU health metrics via node_exporter textfile collector";
+
+  config = mkIf cfg.enable {
   services.prometheus.exporters.node.extraFlags = [
     "--collector.textfile.directory=${textfileDir}"
   ];
@@ -78,5 +87,6 @@ in {
       OnBootSec = "30s";
       OnUnitActiveSec = "60s";
     };
+  };
   };
 }
