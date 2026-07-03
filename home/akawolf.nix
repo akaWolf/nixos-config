@@ -6,6 +6,8 @@
     # CLI / shell
     atool httpie git mcfly pyenv bat eza kitty jq most delta
     wget file killall nix-tree mc
+    # coding
+    claude-code
     # media
     mpv pulsemixer alsa-utils
     # system / process monitoring
