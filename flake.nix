@@ -3,18 +3,31 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager = {
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }:
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, ... }:
     let
       system = "x86_64-linux";
 
+      pkgs-unstable = import nixpkgs-unstable {
+        inherit system;
+        config.allowUnfree = true;
+      };
+
+      # Overlay: pull selected packages from nixos-unstable while keeping the
+      # rest of the system on stable. Add packages here as needed.
+      unstableOverlay = _final: _prev: {
+        inherit (pkgs-unstable) claude-code;
+      };
+
       # Modules shared by every host (the common base).
       commonModules = [
+        { nixpkgs.overlays = [ unstableOverlay ]; }
         ./modules/common.nix
         ./modules/users.nix
         ./modules/shell.nix
