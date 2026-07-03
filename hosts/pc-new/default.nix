@@ -6,6 +6,7 @@
     ./hardware-configuration.nix
     ./disks.nix
     ./smartd.nix
+    ../../modules/vpn-netns.nix
   ];
 
   networking.hostName = "akaWolf-PC-New";
