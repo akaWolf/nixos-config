@@ -1,0 +1,5 @@
+# Mouse wheel scrolls the terminal's native scrollback.
+# Disabling the alternate screen (ti@ / te@) makes screen write to the
+# emulator's main buffer, so the wheel scrolls back as in a normal shell.
+defscrollback 50000
+termcapinfo xterm*|xterms|xs|rxvt|alacritty|foot|st*|tmux*|screen*|kitty* ti@:te@

@@ -24,6 +24,7 @@
   home.file.".gitconfig".source = ../configs/.gitconfig;
   home.file.".fish_aliases".source = ../configs/.fish_aliases;
   home.file.".config/fish/config.fish".source = ../configs/config.fish;
+  home.file.".screenrc".source = ../configs/.screenrc;
 
   # Overridable per-host (set in hosts/<host>/default.nix). Kept as the
   # earliest install baseline so it is safe on every machine.
