@@ -43,13 +43,29 @@ in {
       unitConfig.ConditionPathExists = "/etc/amnezia/amneziawg/${iface}.conf";
 
       serviceConfig = {
-        Type = "oneshot";
-        RemainAfterExit = true;
-        ExecStart = "${pkgs.amneziawg-tools}/bin/awg-quick up ${iface}";
-        ExecStop  = "${pkgs.amneziawg-tools}/bin/awg-quick down ${iface}";
+        # Tie the unit's lifetime to the userspace amneziawg-go daemon: awg-quick
+        # up brings the tunnel up (daemonizes amneziawg-go), then we block while
+        # that process lives. If it dies (crash → wg0 silently disappears, as it
+        # did once), exit non-zero so Restart=always runs ExecStop (down) and then
+        # re-runs the whole pipeline. Watch the process, not the socket — a crash
+        # can leave a stale socket behind.
+        Type = "simple";
+        ExecStart = pkgs.writeShellScript "awg-quick-up-watch-${iface}" ''
+          set -e
+          ${pkgs.amneziawg-tools}/bin/awg-quick up ${iface}
+          set +e
+          while ${pkgs.procps}/bin/pgrep -f "amneziawg-go.*${iface}" >/dev/null 2>&1; do
+            sleep 5
+          done
+          echo "amneziawg-go for ${iface} died — triggering restart" >&2
+          exit 1
+        '';
+        ExecStop = "${pkgs.amneziawg-tools}/bin/awg-quick down ${iface}";
+        Restart = "always";
+        RestartSec = "3";
       };
 
-      path = with pkgs; [ amneziawg-tools amneziawg-go iproute2 iptables ];
+      path = with pkgs; [ amneziawg-tools amneziawg-go iproute2 iptables procps ];
     }) cfg.interfaces);
   };
 }
