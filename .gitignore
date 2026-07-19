@@ -1,3 +1,6 @@
 # nix-build / nixos-rebuild artefacts
 result
 result-*
+
+# редакторские/сессионные бэкапы
+*.bak.*
