@@ -1,5 +1,5 @@
 # Host: pc-new (akaWolf-PC-New) — hardware-specific config.
-{ config, ... }:
+{ config, lib, ... }:
 
 {
   imports = [
@@ -7,7 +7,9 @@
     ./disks.nix
     ./smartd.nix
     ../../modules/vpn-netns.nix
-  ];
+  ]
+  # Optional machine-local module; imported only when present.
+  ++ lib.optional (builtins.pathExists ./private.nix) ./private.nix;
 
   networking.hostName = "akaWolf-PC-New";
 
