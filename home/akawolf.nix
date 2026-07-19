@@ -13,7 +13,7 @@
     # system / process monitoring
     btop s-tui ttyplot lm_sensors
     # hardware / serial / disks
-    picocom android-tools usbutils hdparm gptfdisk screen
+    picocom android-tools usbutils hdparm gptfdisk screen beep
     smartmontools udisks btrfs-progs multipath-tools cryptsetup
     pcsc-tools
     # python with serial + requests
