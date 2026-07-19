@@ -22,8 +22,19 @@
     "kernel.dmesg_restrict" = 0;
   };
 
-  # Load PC speaker for beep() (motherboard buzzer)
-  boot.kernelModules = [ "pcspkr" ];
+  # PC speaker for beep(1). boot.kernelModules is deliberately not used:
+  # it goes through systemd-modules-load, which honours the blacklist that
+  # kmod's ubuntu.conf sets for pcspkr ("ugly and loud noise", Ubuntu #77010).
+  # An explicit modprobe by name is not affected by that blacklist.
+  systemd.services.load-pcspkr = {
+    description = "Load pcspkr, blacklisted by kmod's default config";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = "${pkgs.kmod}/bin/modprobe pcspkr";
+  };
 
   # Let group "input" access /dev/input/pcspkr
   services.udev.extraRules = ''
