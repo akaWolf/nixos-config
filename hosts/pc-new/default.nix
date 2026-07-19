@@ -49,6 +49,17 @@
     interfaces = [ "wg0" ];
   };
 
+  # Podman (rootless) to cross-build the Android APK with the amd64 NDK/gradle
+  # images running natively on this x86_64 host (no QEMU emulation needed).
+  # docker_28 is unmaintained upstream; dockerCompat gives a `docker` CLI alias
+  # and /run/docker.sock so the existing docker-based build pipeline works as-is.
+  virtualisation.podman = {
+    enable = true;
+    dockerCompat = true;
+    dockerSocket.enable = true;
+    defaultNetwork.settings.dns_enabled = true;
+  };
+
   # First NixOS version installed on this machine. Do NOT change.
   system.stateVersion = "25.05";
   home-manager.users.akawolf.home.stateVersion = "25.05";
