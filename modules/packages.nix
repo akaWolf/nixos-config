@@ -6,6 +6,5 @@
     babelfish          # fish helper (system shell)
     fishPlugins.pure   # prompt
     ntfs3g             # NTFS filesystem driver
-    smartmontools      # smartctl in PATH (remote SMART monitor)
   ];
 }
