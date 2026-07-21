@@ -12,7 +12,7 @@
     # media
     mpv pulsemixer alsa-utils
     # system / process monitoring
-    btop s-tui ttyplot lm_sensors
+    btop s-tui ttyplot lm_sensors linuxPackages.perf
     # hardware / serial / disks
     picocom android-tools usbutils hdparm gptfdisk screen beep
     smartmontools udisks btrfs-progs multipath-tools cryptsetup
