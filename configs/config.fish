@@ -32,8 +32,12 @@ set -xg NNN_OPTS 'edE'
 # mcfly: C-r interactive
 mcfly init fish | source
 
-# pyenv: init $PATH
-pyenv init - | source
+# mise: pyenv for all with backward comp
+#~/.cargo/bin/mise activate fish | source
+# instead of the command above use one time mise activate:
+# mise activate fish > ~/.config/fish/conf.d/mise.fish
+# since long-term bug in env fish + mise + poetry:
+# see https://github.com/python-poetry/poetry-plugin-shell/issues/7
 
 # emacs-specific
 if set -q INSIDE_EMACS
