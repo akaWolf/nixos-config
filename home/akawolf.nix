@@ -8,6 +8,7 @@
     wget file killall nix-tree mc
     # coding
     claude-code
+    clang-tools    # clang-format, clang-tidy
     # media
     mpv pulsemixer alsa-utils
     # system / process monitoring
