@@ -10,7 +10,7 @@
     claude-code
     clang-tools    # clang-format, clang-tidy
     # media
-    mpv pulsemixer alsa-utils
+    mpv pulsemixer alsa-utils ffmpeg
     # system / process monitoring
     btop s-tui ttyplot lm_sensors linuxPackages.perf
     # hardware / serial / disks
