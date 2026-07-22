@@ -1,7 +1,6 @@
-# Prometheus node_exporter — exposes system metrics to the home server's
-# Prometheus scraper (192.168.1.100). Bound on LAN, firewall opens 9100
-# only for the home subnet (192.168.1.0/24). IPv6 is intentionally not
-# opened — Prometheus reaches us over IPv4 only.
+# Prometheus exporters — system metrics for the home server's scraper
+# (192.168.1.100). Listen on 0.0.0.0. The machine firewall is disabled
+# (common.nix), so nothing gates these ports beyond the home NAT.
 { ... }:
 
 {
@@ -17,9 +16,4 @@
     listenAddress = "0.0.0.0";
     port = 9633;
   };
-
-  networking.firewall.extraCommands = ''
-    iptables -I INPUT -s 192.168.1.0/24 -p tcp --dport 9100 -j ACCEPT
-    iptables -I INPUT -s 192.168.1.0/24 -p tcp --dport 9633 -j ACCEPT
-  '';
 }
