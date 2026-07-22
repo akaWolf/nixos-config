@@ -36,7 +36,7 @@
         ./modules/smartcard.nix
         ./modules/monitoring.nix
         ./modules/scrutiny-collector.nix
-        ./modules/node-exporter.nix
+        ./modules/exporters.nix
         ./modules/process-exporter.nix
         ./modules/amdgpu-monitor.nix
         ./modules/amneziawg.nix
