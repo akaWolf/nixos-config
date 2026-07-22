@@ -1,5 +1,5 @@
 # Home-manager user environment for akawolf. Identical on all hosts.
-{ pkgs, lib, ... }:
+{ pkgs, lib, inputs, ... }:
 
 {
   home.packages = with pkgs; [
@@ -21,11 +21,22 @@
     (pkgs.python3.withPackages (ps: with ps; [ pyserial requests ]))
   ];
 
-  # Dotfiles (sourced from repo ../configs/)
-  home.file.".gitconfig".source = ../configs/.gitconfig;
-  home.file.".fish_aliases".source = ../configs/.fish_aliases;
-  home.file.".config/fish/config.fish".source = ../configs/config.fish;
-  home.file.".screenrc".source = ../configs/.screenrc;
+  # Dotfiles come from the dotfiles flake input (github:akaWolf/dotfiles) —
+  # one copy, the laptop repo is the source of truth. Update with
+  # `nix flake update dotfiles`.
+  home.file.".gitconfig".source = "${inputs.dotfiles}/.gitconfig";
+  home.file.".fish_aliases".source = "${inputs.dotfiles}/.fish_aliases";
+  home.file.".screenrc".source = "${inputs.dotfiles}/.screenrc";
+  home.file.".config/qtile".source = "${inputs.dotfiles}/.config/qtile";
+  home.file."theme_ntp_background.png".source = "${inputs.dotfiles}/theme_ntp_background.png";
+
+  # config.fish needs a NixOS-only tail: home-manager session vars via babelfish.
+  home.file.".config/fish/config.fish".text =
+    builtins.readFile "${inputs.dotfiles}/.config/fish/config.fish" + ''
+
+      # load nixos home manager using babelfish
+      cat /etc/profiles/per-user/$USER/etc/profile.d/hm-session-vars.sh | babelfish | source
+    '';
 
   # Overridable per-host (set in hosts/<host>/default.nix). Kept as the
   # earliest install baseline so it is safe on every machine.
