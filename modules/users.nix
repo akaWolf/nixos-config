@@ -10,7 +10,7 @@
   users.users.akawolf = {
     isNormalUser = true;
     uid = 1000;
-    extraGroups = [ "wheel" "audio" "reader" "dialout" "input" ];
+    extraGroups = [ "wheel" "audio" "dialout" "input" ];
 
     openssh.authorizedKeys.keys = [
       # Personal login key.
