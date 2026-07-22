@@ -30,5 +30,4 @@
 
   # First NixOS version installed on this machine. Do NOT change.
   system.stateVersion = "24.05";
-  home-manager.users.akawolf.home.stateVersion = "24.05";
 }
