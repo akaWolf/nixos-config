@@ -47,6 +47,13 @@
   services.openssh.enable = true;
   networking.firewall.enable = false;
 
+  # AmneziaWG on every host: the unit is gated by ConditionPathExists on
+  # /etc/amnezia/amneziawg/<iface>.conf, hosts without the config skip it.
+  services.amneziawg = {
+    enable = true;
+    interfaces = [ "wg0" ];
+  };
+
   ##########################################################################
   # Time & locale
   ##########################################################################

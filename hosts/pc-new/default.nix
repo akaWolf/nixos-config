@@ -43,14 +43,6 @@
     { device = "/dev/nvme0"; type = "nvme"; } # nvme-GIGABYTE_GP-ASM2NE6200TTTD
   ];
 
-  # AmneziaWG VPN — drop config into /etc/amnezia/amneziawg/wg0.conf
-  # (root:root mode 600); the awg-quick-wg0.service starts when the
-  # file exists. See modules/amneziawg.nix for details.
-  services.amneziawg = {
-    enable = true;
-    interfaces = [ "wg0" ];
-  };
-
   # Podman (rootless) to cross-build the Android APK with the amd64 NDK/gradle
   # images running natively on this x86_64 host (no QEMU emulation needed).
   # docker_28 is unmaintained upstream; dockerCompat gives a `docker` CLI alias
