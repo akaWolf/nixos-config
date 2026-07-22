@@ -15,7 +15,7 @@
   # Shorter boot-menu auto-select (default is 5s).
   boot.loader.timeout = 3;
 
-  # Build initramfs on tmpfs for speed
+  # /tmp on tmpfs
   boot.tmp.useTmpfs = true;
 
   boot.kernel.sysctl = {
@@ -61,7 +61,7 @@
   ##########################################################################
   # Firmware & nixpkgs
   ##########################################################################
-  hardware.firmware = [ pkgs.sof-firmware ];
+  # enableAllFirmware already includes sof-firmware and friends.
   hardware.enableAllFirmware = true;
   nixpkgs.config.allowUnfree = true;
 
