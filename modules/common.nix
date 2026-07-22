@@ -49,7 +49,7 @@
 
   # AmneziaWG on every host: the unit is gated by ConditionPathExists on
   # /etc/amnezia/amneziawg/<iface>.conf, hosts without the config skip it.
-  services.amneziawg = {
+  my.amneziawg = {
     enable = true;
     interfaces = [ "wg0" ];
   };

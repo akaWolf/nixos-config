@@ -1,7 +1,7 @@
 # AmneziaWG VPN client — DPI-obfuscated WireGuard fork.
 #
 # Deployment model:
-#   1. Enable services.amneziawg + list interface names per host.
+#   1. Enable my.amneziawg + list interface names per host.
 #   2. Place /etc/amnezia/amneziawg/<iface>.conf (root:root mode 600) with
 #      private key, Endpoint, AllowedIPs, and AmneziaWG obfuscation fields
 #      (Jc, Jmin, Jmax, S1, S2, H1..H4). Generate via Amnezia GUI client
@@ -15,9 +15,9 @@
 with lib;
 
 let
-  cfg = config.services.amneziawg;
+  cfg = config.my.amneziawg;
 in {
-  options.services.amneziawg = {
+  options.my.amneziawg = {
     enable = mkEnableOption "AmneziaWG VPN client tools";
 
     interfaces = mkOption {

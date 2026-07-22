@@ -5,7 +5,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  cfg = config.services.amdgpu-monitor;
+  cfg = config.my.amdgpu-monitor;
 
   textfileDir = "/var/lib/node-exporter/textfile_collector";
 
@@ -57,7 +57,7 @@ let
     ${pkgs.coreutils}/bin/mv "$tmp" "$out"
   '';
 in {
-  options.services.amdgpu-monitor.enable =
+  options.my.amdgpu-monitor.enable =
     lib.mkEnableOption "AMD GPU health metrics via node_exporter textfile collector";
 
   config = lib.mkIf cfg.enable {

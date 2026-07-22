@@ -5,7 +5,7 @@
 { pkgs, config, lib, ... }:
 
 let
-  cfg = config.services.scrutiny-collector;
+  cfg = config.my.scrutiny-collector;
 
   # Pinned version of the upstream collector. We override the nixpkgs
   # package because nixpkgs ships v0.8.1, but our scrutiny-web hub is
@@ -32,7 +32,7 @@ let
   ] ++ map (d: "  - device: ${d.device}\n    type: ${d.type}") cfg.devices));
 in
 {
-  options.services.scrutiny-collector = {
+  options.my.scrutiny-collector = {
     version = lib.mkOption {
       type = lib.types.str;
       default = "0.9.2";

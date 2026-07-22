@@ -16,12 +16,12 @@
   boot.kernelParams = [ "acpi_enforce_resources=lax" "amdgpu.runpm=0" ];
 
   # Polaris card needs the AMD GPU health watchdog.
-  services.amdgpu-monitor.enable = true;
+  my.amdgpu-monitor.enable = true;
 
   # Collector strips "/dev/" prefix internally — by-id paths break (see
   # smart_support:false in early debug). The disk SN is the real identity
   # in scrutiny; sd[a-d] enumeration just needs to be stable per boot.
-  services.scrutiny-collector.devices = [
+  my.scrutiny-collector.devices = [
     { device = "/dev/sda"; type = "sat"; } # ata-OCZ-VERTEX3 (system)
     { device = "/dev/sdb"; type = "sat"; } # ata-WDC_WD60EFPX-68C5ZN0 (archive)
     { device = "/dev/sdc"; type = "sat"; } # ata-PLEXTOR_PX-128M5Pro (windows)
