@@ -95,4 +95,10 @@
     enable = true;
     package = pkgs.plocate;
   };
+
+  ##########################################################################
+  # Misc system tools
+  ##########################################################################
+  # Userland NTFS tools (mkntfs, ntfsfix); mounts use the kernel ntfs3 driver.
+  environment.systemPackages = [ pkgs.ntfs3g ];
 }

@@ -31,7 +31,6 @@
         ./modules/common.nix
         ./modules/users.nix
         ./modules/shell.nix
-        ./modules/packages.nix
         ./modules/gnupg.nix
         ./modules/desktop.nix
         ./modules/smartcard.nix
