@@ -1,11 +1,11 @@
-# Prometheus process_exporter — метрики CPU/RAM по процессам, скрейпит
-# домашний сервер (192.168.1.100). Нужен, чтобы алерт по CPU называл
-# конкретный процесс, а не только хост: на serverP залипший dockerd
-# жёг ядро 7 часов, на pc-new — процесс 18.6 часов, и без этих метрик
-# видно лишь "хост чем-то занят".
+# Prometheus process_exporter — per-process CPU/RAM metrics, scraped by the
+# home server (192.168.1.100). Exists so a CPU alert can name the offending
+# process instead of just the host: a stuck dockerd once burned a core for
+# 7 hours on the server, and pc-new ran one hot process for 18.6 hours —
+# without these metrics all you see is "the host is busy".
 #
-# Группировка по имени команды ({{.Comm}}), берём все процессы —
-# так же, как настроено на сервере.
+# Group by command name ({{.Comm}}), take every process — same setup as on
+# the server.
 { ... }:
 
 {
@@ -17,8 +17,4 @@
       { name = "{{.Comm}}"; cmdline = [ ".+" ]; }
     ];
   };
-
-  networking.firewall.extraCommands = ''
-    iptables -I INPUT -s 192.168.1.0/24 -p tcp --dport 9256 -j ACCEPT
-  '';
 }
