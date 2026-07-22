@@ -4,12 +4,9 @@
 # resume-failure counters every minute.
 { config, lib, pkgs, ... }:
 
-with lib;
-
 let
   cfg = config.services.amdgpu-monitor;
-in
-let
+
   textfileDir = "/var/lib/node-exporter/textfile_collector";
 
   checkScript = pkgs.writeShellScript "amdgpu-check" ''
@@ -61,32 +58,32 @@ let
   '';
 in {
   options.services.amdgpu-monitor.enable =
-    mkEnableOption "AMD GPU health metrics via node_exporter textfile collector";
+    lib.mkEnableOption "AMD GPU health metrics via node_exporter textfile collector";
 
-  config = mkIf cfg.enable {
-  services.prometheus.exporters.node.extraFlags = [
-    "--collector.textfile.directory=${textfileDir}"
-  ];
+  config = lib.mkIf cfg.enable {
+    services.prometheus.exporters.node.extraFlags = [
+      "--collector.textfile.directory=${textfileDir}"
+    ];
 
-  systemd.tmpfiles.rules = [
-    "d ${textfileDir} 0755 node-exporter node-exporter -"
-  ];
+    systemd.tmpfiles.rules = [
+      "d ${textfileDir} 0755 node-exporter node-exporter -"
+    ];
 
-  systemd.services.amdgpu-monitor = {
-    description = "AMD GPU health metrics for Prometheus";
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${checkScript}";
+    systemd.services.amdgpu-monitor = {
+      description = "AMD GPU health metrics for Prometheus";
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = "${checkScript}";
+      };
     };
-  };
 
-  systemd.timers.amdgpu-monitor = {
-    description = "Run amdgpu-monitor every minute";
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      OnBootSec = "30s";
-      OnUnitActiveSec = "60s";
+    systemd.timers.amdgpu-monitor = {
+      description = "Run amdgpu-monitor every minute";
+      wantedBy = [ "timers.target" ];
+      timerConfig = {
+        OnBootSec = "30s";
+        OnUnitActiveSec = "60s";
+      };
     };
-  };
   };
 }
