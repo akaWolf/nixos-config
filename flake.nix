@@ -26,8 +26,18 @@
 
       # Overlay: pull selected packages from nixos-unstable while keeping the
       # rest of the system on stable. Add packages here as needed.
+      # claude-code ships faster than nixpkgs picks it up (unstable is on
+      # 2.1.217, master on 2.1.219), so pin the release and fetch the same
+      # prebuilt binary the nixpkgs package uses. versionCheckHook validates
+      # the pin; drop the override once nixpkgs catches up.
       unstableOverlay = _final: _prev: {
-        inherit (pkgs-unstable) claude-code;
+        claude-code = pkgs-unstable.claude-code.overrideAttrs (_: rec {
+          version = "2.1.220";
+          src = pkgs-unstable.fetchurl {
+            url = "https://downloads.claude.ai/claude-code-releases/${version}/linux-x64/claude";
+            hash = "sha256-Z09h8g/zBvMQDPkgDkw2xLcCeLW+8ohFSYGblCqJyGM=";
+          };
+        });
       };
 
       # Modules shared by every host (the common base).
