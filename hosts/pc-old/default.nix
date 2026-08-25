@@ -19,13 +19,17 @@
   my.amdgpu-monitor.enable = true;
 
   # Collector strips "/dev/" prefix internally — by-id paths break (see
-  # smart_support:false in early debug). The disk SN is the real identity
-  # in scrutiny; sd[a-d] enumeration just needs to be stable per boot.
+  # smart_support:false in early debug). Identity in scrutiny comes from the
+  # disk serial, so this list only has to name every disk; which letter lands
+  # on which drive does not matter and is not stable — the four have already
+  # reshuffled across reboots, so no letter is annotated with a model here.
+  # Disks on this host: OCZ-VERTEX3 (system), WD60EFPX (archive),
+  # ST2000NM0033, PLEXTOR PX-128M5Pro (windows).
   my.scrutiny-collector.devices = [
-    { device = "/dev/sda"; type = "sat"; } # ata-OCZ-VERTEX3 (system)
-    { device = "/dev/sdb"; type = "sat"; } # ata-WDC_WD60EFPX-68C5ZN0 (archive)
-    { device = "/dev/sdc"; type = "sat"; } # ata-PLEXTOR_PX-128M5Pro (windows)
-    { device = "/dev/sdd"; type = "sat"; } # ata-ST2000NM0033-9ZM175
+    { device = "/dev/sda"; type = "sat"; }
+    { device = "/dev/sdb"; type = "sat"; }
+    { device = "/dev/sdc"; type = "sat"; }
+    { device = "/dev/sdd"; type = "sat"; }
   ];
 
   # First NixOS version installed on this machine. Do NOT change.
