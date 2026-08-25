@@ -4,7 +4,7 @@
 {
   home.packages = with pkgs; [
     # CLI / shell
-    atool httpie git mcfly mise bat eza kitty jq most delta
+    atool httpie git mcfly mise bat eza kitty jq most delta bc
     wget file killall nix-tree mc
     # coding
     claude-code
