@@ -9,8 +9,10 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot";
 
-  # Small ESP (~100M) — keep only the last N generations in /boot.
-  boot.loader.systemd-boot.configurationLimit = 2;
+  # 100M ESP, and it also carries the Windows bootloader (~26M). One 26.05
+  # generation is ~54M (40M initrd + 13M kernel), so two of them do not fit —
+  # systemd-boot silently keeps one anyway. Say so explicitly.
+  boot.loader.systemd-boot.configurationLimit = 1;
 
   # Shorter boot-menu auto-select (default is 5s).
   boot.loader.timeout = 3;

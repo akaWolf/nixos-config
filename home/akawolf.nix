@@ -28,6 +28,13 @@
   home.file.".fish_aliases".source = "${inputs.dotfiles}/.fish_aliases";
   home.file.".screenrc".source = "${inputs.dotfiles}/.screenrc";
   home.file.".config/qtile".source = "${inputs.dotfiles}/.config/qtile";
+
+  # ncurses always searches ~/.terminfo, even in processes that have no
+  # TERMINFO_DIRS in their environment — a screen daemon started outside a
+  # login shell could not resolve xterm-kitty, so `screen -rd` from kitty
+  # died with "Cannot find terminfo entry".
+  home.file.".terminfo/x/xterm-kitty".source =
+    "${pkgs.kitty.terminfo}/share/terminfo/x/xterm-kitty";
   home.file."theme_ntp_background.png".source = "${inputs.dotfiles}/theme_ntp_background.png";
 
   # config.fish needs a NixOS-only tail: home-manager session vars via babelfish.
