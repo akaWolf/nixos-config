@@ -40,29 +40,27 @@
         });
       };
 
-      # qtile 0.36 runs its test suite in installCheckPhase and one REPL-server
-      # test is timing-sensitive — it fails in the sandbox with
-      # "ConnectionResetError: Connection lost" while the other 1371 pass, and
-      # it already failed all four automatic reruns. nixpkgs disables a long
-      # list of flaky qtile tests the same way; this adds one more.
-      qtileTestOverlay = _final: prev: {
+      # qtile takes `extraPackages` as a derivation argument (it lands straight
+      # in `dependencies`), so asking for qtile-extras produces a package Hydra
+      # never built — it is always compiled locally, and that runs the upstream
+      # test suite: ~9.5 minutes on every rebuild of the qtile environment.
+      # The tests verify qtile itself, which upstream already tested on Hydra;
+      # we only change its dependency list. Skip them. (They are also flaky
+      # here: the REPL-server test waits a hard-coded 0.1s for a port to bind
+      # and loses the race against a busy nixos-rebuild.)
+      qtileSkipTestsOverlay = _final: prev: {
         pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
           (_pyFinal: pyPrev: {
             # overrideAttrs, not overridePythonAttrs: the latter drops the
-            # `override` attribute that the NixOS qtile module needs to pass
-            # extraPackages.
-            qtile = pyPrev.qtile.overrideAttrs (old: {
-              disabledTests = (old.disabledTests or [ ]) ++ [
-                "test_repl_server_executes_code"
-              ];
-            });
+            # `override` attribute the NixOS qtile module needs for extraPackages.
+            qtile = pyPrev.qtile.overrideAttrs (_: { doInstallCheck = false; });
           })
         ];
       };
 
       # Modules shared by every host (the common base).
       commonModules = [
-        { nixpkgs.overlays = [ unstableOverlay qtileTestOverlay ]; }
+        { nixpkgs.overlays = [ unstableOverlay qtileSkipTestsOverlay ]; }
         ./modules/common.nix
         ./modules/users.nix
         ./modules/shell.nix
