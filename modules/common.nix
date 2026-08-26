@@ -5,14 +5,23 @@
   ##########################################################################
   # Bootloader
   ##########################################################################
-  boot.loader.systemd-boot.enable = true;
+  # GRUB, not systemd-boot. systemd-boot can only read FAT, so every retained
+  # generation had to live in the 100M ESP — ~54M per generation next to 26M of
+  # Windows bootloader, so exactly one fit and there was no rollback entry in
+  # the boot menu. Neither machine can grow its ESP without relocating a
+  # neighbouring partition (root on pc-old, 1.7T of NTFS on pc-new). GRUB reads
+  # ext4, so kernels stay in the nix store on the root filesystem and the ESP
+  # only carries grubx64.efi (~140K). The ESP mounts at /boot/efi; /boot itself
+  # is a plain directory on root.
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.efi.efiSysMountPoint = "/boot";
-
-  # 100M ESP, and it also carries the Windows bootloader (~26M). One 26.05
-  # generation is ~54M (40M initrd + 13M kernel), so two of them do not fit —
-  # systemd-boot silently keeps one anyway. Say so explicitly.
-  boot.loader.systemd-boot.configurationLimit = 1;
+  boot.loader.efi.efiSysMountPoint = "/boot/efi";
+  boot.loader.grub = {
+    enable = true;
+    efiSupport = true;
+    device = "nodev";
+    useOSProber = true;   # both machines dual-boot Windows
+    configurationLimit = 20;
+  };
 
   # Shorter boot-menu auto-select (default is 5s).
   boot.loader.timeout = 3;

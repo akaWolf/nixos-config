@@ -1,5 +1,5 @@
 # Host: pc-old (akaWolf-PC-Old) — hardware-specific config.
-{ lib, ... }:
+{ ... }:
 
 {
   imports = [
@@ -9,22 +9,6 @@
   ];
 
   networking.hostName = "akaWolf-PC-Old";
-
-  # GRUB instead of systemd-boot. systemd-boot can only read FAT, so every
-  # retained generation had to sit in the 100M ESP (~54M each, next to 26M of
-  # Windows bootloader) — exactly one fit, leaving no rollback entry and no way
-  # to grow the ESP without moving the root partition. GRUB reads ext4, so the
-  # kernels live in /boot on the root filesystem and the ESP only carries
-  # grubx64.efi. Trial runs on this host first; pc-new keeps systemd-boot.
-  boot.loader.systemd-boot.enable = lib.mkForce false;
-  boot.loader.efi.efiSysMountPoint = lib.mkForce "/boot/efi";
-  boot.loader.grub = {
-    enable = true;
-    efiSupport = true;
-    device = "nodev";
-    useOSProber = true;      # finds the Windows install on the Plextor SSD
-    configurationLimit = 20;
-  };
 
   # Motherboard SuperIO sensors (ITE IT8728F) — driver isn't auto-loaded,
   # and ACPI claims the chip's I/O ports unless told to back off.

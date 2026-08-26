@@ -18,7 +18,9 @@
       fsType = "ext4";
     };
 
-  fileSystems."/boot" =
+  # The ESP lives under /boot/efi, not /boot: /boot itself is a directory on
+  # the root filesystem so GRUB can keep kernels there (see modules/common.nix).
+  fileSystems."/boot/efi" =
     { device = "/dev/disk/by-uuid/EC56-A21C";
       fsType = "vfat";
     };
