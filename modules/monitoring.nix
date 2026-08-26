@@ -28,6 +28,11 @@
   services.smartd = {
     enable = true;
     autodetect = false; # device list is explicit, per-host
+    # No wall(1) broadcasts: they land in every terminal registered in utmp,
+    # including every screen window, and a failing disk warns every 30 minutes.
+    # Mail still goes out, and the metrics reach prometheus/scrutiny anyway.
+    notifications.wall.enable = false;
+
     notifications.mail = {
       enable = true;
       recipient = "akawolf0@gmail.com";
