@@ -56,7 +56,16 @@
   # Networking (hostName is per-host)
   ##########################################################################
   services.openssh.enable = true;
-  networking.firewall.enable = false;
+
+  # Firewall on. Services here bind to wildcard addresses (the exporters listen
+  # on *:9100 and friends), and pc-new carries a globally routable IPv6 address
+  # on its tunnel — so without this they answer from the internet, not just the
+  # LAN. SSH stays reachable from anywhere; it is key-only, passwords are off.
+  # Per-host rules scope everything else to the LAN interface.
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 22 ];
+  };
 
   # AmneziaWG on every host: the unit is gated by ConditionPathExists on
   # /etc/amnezia/amneziawg/<iface>.conf, hosts without the config skip it.

@@ -10,6 +10,11 @@
 
   networking.hostName = "akaWolf-PC-Old";
 
+  # Prometheus and smartctl exporters, scraped by the home server on
+  # 192.168.1.100. LAN interface only — they have no business being reachable
+  # from anywhere else.
+  networking.firewall.interfaces."eno1".allowedTCPPorts = [ 9100 9256 9633 ];
+
   # Motherboard SuperIO sensors (ITE IT8728F) — driver isn't auto-loaded,
   # and ACPI claims the chip's I/O ports unless told to back off.
   boot.kernelModules = [ "it87" ];
