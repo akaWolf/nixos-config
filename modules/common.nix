@@ -56,16 +56,28 @@
   # Networking (hostName is per-host)
   ##########################################################################
   services.openssh.enable = true;
+  # The openssh module opens its port in the firewall by default; we scope SSH
+  # ourselves below, by source subnet and IPv4 only.
+  services.openssh.openFirewall = false;
 
-  # Firewall on. Services here bind to wildcard addresses (the exporters listen
-  # on *:9100 and friends), and pc-new carries a globally routable IPv6 address
-  # on its tunnel — so without this they answer from the internet, not just the
-  # LAN. SSH stays reachable from anywhere; it is key-only, passwords are off.
-  # Per-host rules scope everything else to the LAN interface.
-  networking.firewall = {
-    enable = true;
-    allowedTCPPorts = [ 22 ];
-  };
+  # Firewall on. Services here bind wildcard addresses, and both machines hold a
+  # globally routable IPv6 address on their LAN interface — without this they
+  # answer the internet, not just the LAN.
+  #
+  # Nothing is opened globally, not even SSH: the router forwards no port to
+  # these hosts, so every legitimate client is already on the LAN. SSH is
+  # therefore scoped by source subnet and to IPv4 only, like the exporters.
+  # Consequence worth knowing: the machines can no longer reach each other over
+  # their global IPv6 addresses, only over 192.168.1.x.
+  networking.firewall.enable = true;
+
+  networking.firewall.extraCommands = ''
+    iptables -I nixos-fw 1 -s 192.168.1.0/24 -p tcp --dport 22 -j nixos-fw-accept
+  '';
+
+  networking.firewall.extraStopCommands = ''
+    iptables -D nixos-fw -s 192.168.1.0/24 -p tcp --dport 22 -j nixos-fw-accept 2>/dev/null || true
+  '';
 
   # AmneziaWG on every host: the unit is gated by ConditionPathExists on
   # /etc/amnezia/amneziawg/<iface>.conf, hosts without the config skip it.
