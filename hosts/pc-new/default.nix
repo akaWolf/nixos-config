@@ -13,9 +13,17 @@
 
   networking.hostName = "akaWolf-PC-New";
 
-  # kb-service API. The exporters are handled in modules/exporters.nix, scoped
-  # by source subnet rather than by interface.
-  networking.firewall.interfaces."enp5s0".allowedTCPPorts = [ 8000 ];
+  # kb-service API. Scoped by source subnet for the same reason the exporters
+  # are (modules/exporters.nix): it binds 0.0.0.0 and has no authentication, and
+  # an interface-scoped rule would still admit external IPv6 arriving on that
+  # interface. IPv4 only — the clients are on the LAN.
+  networking.firewall.extraCommands = ''
+    iptables -I nixos-fw 1 -s 192.168.1.0/24 -p tcp --dport 8000 -j nixos-fw-accept
+  '';
+
+  networking.firewall.extraStopCommands = ''
+    iptables -D nixos-fw -s 192.168.1.0/24 -p tcp --dport 8000 -j nixos-fw-accept 2>/dev/null || true
+  '';
 
   # NVIDIA RTX 2080 Ti (Turing) — proprietary driver for CUDA.
   services.xserver.videoDrivers = [ "nvidia" ];
