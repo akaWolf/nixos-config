@@ -13,16 +13,9 @@
 
   networking.hostName = "akaWolf-PC-New";
 
-  # LAN-only services. The exporters are scraped by the home server on
-  # 192.168.1.100; 8000 is the kb-service API. Everything else stays closed —
-  # this machine has a globally routable IPv6 address on its tunnel, so a
-  # wildcard listener would otherwise answer the whole internet.
-  networking.firewall.interfaces."enp5s0".allowedTCPPorts = [
-    9100
-    9256
-    9633
-    8000
-  ];
+  # kb-service API. The exporters are handled in modules/exporters.nix, scoped
+  # by source subnet rather than by interface.
+  networking.firewall.interfaces."enp5s0".allowedTCPPorts = [ 8000 ];
 
   # NVIDIA RTX 2080 Ti (Turing) — proprietary driver for CUDA.
   services.xserver.videoDrivers = [ "nvidia" ];
