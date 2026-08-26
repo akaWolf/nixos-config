@@ -13,10 +13,11 @@
 
   networking.hostName = "akaWolf-PC-New";
 
-  # kb-service API. Scoped by source subnet for the same reason the exporters
-  # are (modules/exporters.nix): it binds 0.0.0.0 and has no authentication, and
-  # an interface-scoped rule would still admit external IPv6 arriving on that
-  # interface. IPv4 only — the clients are on the LAN.
+  # kb-service API. Its /v1 routes do require a bearer token, but /health is
+  # open and leaks the kb path and article count, it binds 0.0.0.0, and an
+  # interface-scoped rule would still admit external IPv6 arriving on that
+  # interface — so scope it by source like the exporters (modules/exporters.nix).
+  # IPv4 only; the clients are on the LAN.
   networking.firewall.extraCommands = ''
     iptables -I nixos-fw 1 -s 192.168.1.0/24 -p tcp --dport 8000 -j nixos-fw-accept
   '';
