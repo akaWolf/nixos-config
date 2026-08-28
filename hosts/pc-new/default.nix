@@ -1,5 +1,5 @@
 # Host: pc-new (akaWolf-PC-New) — hardware-specific config.
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   imports = [
@@ -25,6 +25,28 @@
   networking.firewall.extraStopCommands = ''
     iptables -D nixos-fw -s 192.168.1.0/24 -p tcp --dport 8000 -j nixos-fw-accept 2>/dev/null || true
   '';
+
+  # Kernel messages leave over UDP the moment they are printed, so a freeze that
+  # never reaches the disk still leaves its last words on pc-old. Started as a
+  # unit rather than a kernel parameter because netconsole is a module here and
+  # wants the interface already up.
+  #
+  # The target MAC is the broadcast address on purpose: the receiver is selected
+  # by IP anyway, and this keeps a hardware address out of the public repo and
+  # out of the way should that NIC ever be replaced.
+  systemd.services.netconsole = {
+    description = "Kernel console over UDP to pc-old";
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.kmod}/bin/modprobe netconsole "
+        + "netconsole=6666@192.168.1.3/enp5s0,6666@192.168.1.2/ff:ff:ff:ff:ff:ff";
+      ExecStop = "${pkgs.kmod}/bin/modprobe -r netconsole";
+    };
+  };
 
   # NVIDIA RTX 2080 Ti (Turing) — proprietary driver for CUDA.
   services.xserver.videoDrivers = [ "nvidia" ];

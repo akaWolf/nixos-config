@@ -31,7 +31,23 @@
 
   boot.kernel.sysctl = {
     "kernel.dmesg_restrict" = 0;
+    # Magic SysRq. On a frozen machine this is the quickest way to tell a dead
+    # kernel from a wedged userland: Alt+SysRq+W still prints the blocked tasks
+    # if the kernel lives. (The CapsLock LED answers the same question with no
+    # configuration at all -- if it toggles, the kernel is running.)
+    "kernel.sysrq" = 1;
   };
+
+  # A hard lockup otherwise leaves nothing to read: pc-new froze on 2026-08-29
+  # with an empty journal, an empty pstore and no panic recorded anywhere.
+  # Making the NMI watchdog panic turns that silence into a message -- which
+  # netconsole carries off the machine -- and then reboots instead of leaving
+  # the host dead until somebody walks over to it.
+  #
+  # hung_task_panic is deliberately NOT set alongside: a failing disk blocks
+  # tasks for minutes at a time, and it would reboot the machine mid-rescue.
+  # The kernel still logs those tasks, which is the part worth having.
+  boot.kernelParams = [ "nmi_watchdog=panic" "panic=20" ];
 
   # PC speaker for beep(1). boot.kernelModules is deliberately not used:
   # it goes through systemd-modules-load, which honours the blacklist that

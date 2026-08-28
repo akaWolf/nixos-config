@@ -1,5 +1,5 @@
 # Host: pc-old (akaWolf-PC-Old) — hardware-specific config.
-{ ... }:
+{ pkgs, ... }:
 
 {
   imports = [
@@ -31,6 +31,34 @@
     { device = "/dev/sdc"; type = "sat"; }
     { device = "/dev/sdd"; type = "sat"; }
   ];
+
+  # Receiving end of pc-new's netconsole (see its host config). The lines land
+  # in this machine's journal tagged netconsole-pcnew, so they rotate with
+  # everything else instead of growing a file nobody prunes:
+  #   journalctl -t netconsole-pcnew
+  systemd.services.netconsole-receiver = {
+    description = "Collect kernel console messages from pc-new";
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      ExecStart = pkgs.writeShellScript "netconsole-receiver" ''
+        ${pkgs.socat}/bin/socat -u UDP-RECV:6666,reuseaddr - \
+          | ${pkgs.systemd}/bin/systemd-cat -t netconsole-pcnew
+      '';
+      DynamicUser = true;
+      Restart = "always";
+      RestartSec = 5;
+    };
+  };
+
+  networking.firewall.extraCommands = ''
+    iptables -I nixos-fw 1 -s 192.168.1.0/24 -p udp --dport 6666 -j nixos-fw-accept
+  '';
+
+  networking.firewall.extraStopCommands = ''
+    iptables -D nixos-fw -s 192.168.1.0/24 -p udp --dport 6666 -j nixos-fw-accept 2>/dev/null || true
+  '';
 
   # First NixOS version installed on this machine. Do NOT change.
   system.stateVersion = "24.05";
