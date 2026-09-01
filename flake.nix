@@ -32,10 +32,10 @@
       # the pin; drop the override once nixpkgs catches up.
       unstableOverlay = _final: _prev: {
         claude-code = pkgs-unstable.claude-code.overrideAttrs (_: rec {
-          version = "2.1.220";
+          version = "2.1.257";
           src = pkgs-unstable.fetchurl {
             url = "https://downloads.claude.ai/claude-code-releases/${version}/linux-x64/claude";
-            hash = "sha256-Z09h8g/zBvMQDPkgDkw2xLcCeLW+8ohFSYGblCqJyGM=";
+            hash = "sha256-mmS9qdhyKh+gW++aWWHQfgMxuZWX7ani9qcy86D/fwU=";
           };
         });
       };
