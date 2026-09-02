@@ -48,6 +48,25 @@
     };
   };
 
+  # os-prober walks every partition on every disk, and on this host that means
+  # touching the failing TOSHIBA. Under the rescue load its reads take seconds,
+  # so on 2026-09-02 a switch sat 30 minutes inside an uninterruptible
+  # `grub-probe -d /dev/sda1` before the disk answered. GRUB_OS_PROBER_SKIP_LIST
+  # is no cure: 30_os-prober filters the *output* of os-prober, while the stall
+  # happens inside os-prober itself, well before any filtering.
+  #
+  # Nothing here needs discovering anyway -- both values below were read off the
+  # entry os-prober used to generate, and the ESP does not move.
+  boot.loader.grub.useOSProber = false;
+  boot.loader.grub.extraEntries = ''
+    menuentry "Windows Boot Manager" --class windows --class os {
+      insmod part_gpt
+      insmod fat
+      search --no-floppy --fs-uuid --set=root EC56-A21C
+      chainloader /EFI/Microsoft/Boot/bootmgfw.efi
+    }
+  '';
+
   # NVIDIA RTX 2080 Ti (Turing) — proprietary driver for CUDA.
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.graphics = {

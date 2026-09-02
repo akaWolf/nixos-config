@@ -1,5 +1,5 @@
 # Common system base — shared by all hosts.
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 {
   ##########################################################################
@@ -19,7 +19,10 @@
     enable = true;
     efiSupport = true;
     device = "nodev";
-    useOSProber = true;   # both machines dual-boot Windows
+    # Both machines dual-boot Windows. mkDefault because a host whose disks
+    # make probing dangerous turns it off and writes the entry out by hand --
+    # see hosts/pc-new.
+    useOSProber = lib.mkDefault true;
     configurationLimit = 20;
   };
 
