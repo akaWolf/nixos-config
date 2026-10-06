@@ -5,13 +5,17 @@ NixOS flake for two desktops: `pc-old` (akaWolf-PC-Old) and `pc-new`
 
 ## Layout
 
-    flake.nix            inputs (nixos-26.05, home-manager, unstable overlay)
-                         and host wiring; custom options live under `my.*`
+    flake.nix            inputs (nixos-26.05, home-manager, unstable overlay,
+                         dotfiles) and host wiring; custom options live
+                         under `my.*`
     modules/             shared system modules, one concern per file
     hosts/<host>/        hardware-configuration, disks, smartd device list,
                          host-specific quirks (GPU driver, sensors, VMs)
     home/akawolf.nix     home-manager user environment
-    configs/             dotfiles deployed via home-manager
+
+Dotfiles are not kept here: the `dotfiles` input pulls
+github:akaWolf/dotfiles and home-manager deploys straight from it, so a
+dotfiles change lands with `nix flake update dotfiles` and a rebuild.
 
 ## Machine-local modules
 
