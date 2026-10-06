@@ -93,7 +93,6 @@
 
   # See pc-old/default.nix for why by-id is not used.
   my.scrutiny-collector.devices = [
-    { device = "/dev/sda";   type = "sat";  } # ata-TOSHIBA_HDWD130
     { device = "/dev/nvme0"; type = "nvme"; } # nvme-GIGABYTE_GP-ASM2NE6200TTTD
   ];
 

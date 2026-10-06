@@ -15,8 +15,8 @@
     options = [ "ro" "nofail" "noauto" "x-systemd.automount" ];
   };
 
-  # seagate-old (UUID BA78EA2A78E9E55B) has physically moved to pc-new
-  # and is mounted there as /mnt/toshiba1.
+  # seagate-old (UUID BA78EA2A78E9E55B) physically moved to pc-new, where it
+  # was /mnt/toshiba1 until that disk was retired on 2026-10-06.
 
   fileSystems."/mnt/plextor" = {
     device = "/dev/disk/by-uuid/F218AD6E18AD3291";
