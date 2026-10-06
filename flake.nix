@@ -59,12 +59,20 @@
       # we only change its dependency list. Skip them. (They are also flaky
       # here: the REPL-server test waits a hard-coded 0.1s for a port to bind
       # and loses the race against a busy nixos-rebuild.)
-      qtileSkipTestsOverlay = _final: prev: {
+      qtileSkipTestsOverlay = final: prev: {
         pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
           (_pyFinal: pyPrev: {
             # overrideAttrs, not overridePythonAttrs: the latter drops the
             # `override` attribute the NixOS qtile module needs for extraPackages.
-            qtile = pyPrev.qtile.overrideAttrs (_: { doInstallCheck = false; });
+            #
+            # The wlroots override is a stopgap: nixos-26.05 hands qtile 0.37
+            # wlroots 0.19, but its wayland backend is written against the 0.20
+            # API (wlr_xcursor_image_get_buffer, the new wlr_xwayland_set_cursor)
+            # and fails to compile, so the channel has no working qtile at all.
+            # unstable already passes wlroots_0_20; drop it once 26.05 does.
+            qtile = (pyPrev.qtile.override {
+              wlroots = final.wlroots_0_20;
+            }).overrideAttrs (_: { doInstallCheck = false; });
           })
         ];
       };
