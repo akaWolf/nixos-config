@@ -9,6 +9,11 @@ in
     wantedBy = [ "multi-user.target" ];
     after = [ "network.target" ];
     before = [ "awg-quick-wg0.service" ];
+    # Never recreate the namespace on a switch: `ip netns delete` + `add`
+    # strands whatever already runs inside in an orphaned copy without wg0,
+    # and stopping this unit also stops every unit that Requires= it. A changed
+    # unit (a new iproute2, say) takes effect on the next boot instead.
+    restartIfChanged = false;
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
