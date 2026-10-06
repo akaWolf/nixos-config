@@ -27,17 +27,28 @@
       # Overlay: pull selected packages from nixos-unstable while keeping the
       # rest of the system on stable. Add packages here as needed.
       # claude-code ships faster than nixpkgs picks it up (unstable is on
-      # 2.1.217, master on 2.1.219), so pin the release and fetch the same
-      # prebuilt binary the nixpkgs package uses. versionCheckHook validates
-      # the pin; drop the override once nixpkgs catches up.
+      # 2.1.289), so pin the release through the package's own `manifest`
+      # argument: the nixpkgs package reads version, artifact name and checksum
+      # from the release's manifest.zst.json and unpacks the zstd binary, so
+      # only the linux-x64 entry is needed here. versionCheckHook validates the
+      # pin; drop the override once nixpkgs catches up.
+      #
+      # The pin tracks the "latest" channel, not "stable" (2.1.285 at the time
+      # of writing): new models land there first, and a build that predates a
+      # model simply refuses it as unknown -- which is how Opus 5.5 came to be
+      # unavailable. Channel head and its checksum:
+      #   curl -s https://downloads.claude.ai/claude-code-releases/latest
+      #   curl -s https://downloads.claude.ai/claude-code-releases/<version>/manifest.zst.json
       unstableOverlay = _final: _prev: {
-        claude-code = pkgs-unstable.claude-code.overrideAttrs (_: rec {
-          version = "2.1.261";
-          src = pkgs-unstable.fetchurl {
-            url = "https://downloads.claude.ai/claude-code-releases/${version}/linux-x64/claude";
-            hash = "sha256-SuQN0XhOhXU+dC4J8mfSnsu4KJA2GtOBfSdWCGbTZKY=";
+        claude-code = pkgs-unstable.claude-code.override {
+          manifest = {
+            version = "2.1.291";
+            platforms.linux-x64 = {
+              binary = "claude.zst";
+              checksum = "659b2a4f57441eae2bad4e1ee67f93c26fe630863683463f48c7000ebeda8372";
+            };
           };
-        });
+        };
       };
 
       # qtile takes `extraPackages` as a derivation argument (it lands straight
