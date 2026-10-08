@@ -2,6 +2,18 @@
 
 let
   sudo = "/run/wrappers/bin/sudo";
+
+  # Runs as root inside `ip netns exec`, which gives it a private mount
+  # namespace. glibc asks nscd whenever its socket is reachable, and nscd
+  # sits in the default netns and uses the LAN resolver, so DNS bypassed the
+  # tunnel and /etc/netns/ns_vpn/resolv.conf went unused. An empty tmpfs over
+  # /run/nscd sends glibc to that resolv.conf.
+  enter = pkgs.writeShellScript "vpn-enter" ''
+    if [ -d /run/nscd ]; then
+      ${pkgs.util-linux}/bin/mount -t tmpfs -o size=4k,mode=0755 nscd-hidden /run/nscd || exit 1
+    fi
+    exec ${sudo} -E -H -u akawolf "$@"
+  '';
 in
 {
   systemd.services."netns-ns_vpn" = {
@@ -34,14 +46,14 @@ in
 
   environment.systemPackages = [
     (pkgs.writeShellScriptBin "vpn" ''
-      exec ${sudo} ${pkgs.iproute2}/bin/ip netns exec ns_vpn ${sudo} -E -H -u akawolf "$@"
+      exec ${sudo} ${pkgs.iproute2}/bin/ip netns exec ns_vpn ${enter} "$@"
     '')
   ];
 
   security.sudo.extraRules = [{
     users = [ "akawolf" ];
     commands = [{
-      command = "${pkgs.iproute2}/bin/ip netns exec ns_vpn ${sudo} -E -H -u akawolf *";
+      command = "${pkgs.iproute2}/bin/ip netns exec ns_vpn ${enter} *";
       options = [ "NOPASSWD" ];
     }];
   }];
